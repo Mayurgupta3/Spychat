@@ -33,7 +33,7 @@ def add_status():
     else:
         print colored('Sorry!, You don\'t have any current status message','red')
 
-    default = raw_input('Do you want to select status from the older one (y/n)?')
+    default = raw_input(colored('Do you want to select status from the older one (y/n)?','yellow'))
 
     if default.upper() == 'N':
         new_status_message = raw_input('From the above, Which status you want to set?')
@@ -59,7 +59,7 @@ def add_status():
             print colored('You choose invalid option. Please choose a valid one. Press Y or N' , 'red')
 
     if updated_status_message:
-         print 'Your updated status message is this %s' %(updated_status_message)
+         print 'Your updated status message is this: %s' %(colored(updated_status_message,'blue'))
     else:
          print colored('you don\'t have any updated message','red')
     return updated_status_message
@@ -115,13 +115,20 @@ def send_message():
     original_image = raw_input('What is the name of the image?')
     output_path = 'output.jpg'
     text = raw_input('What do you want to say?')
-    Steganography.encode(original_image, output_path, text)
 
-    new_chat = ChatMessage(text,True)
+    #This is condition where we are checking the length of the text
+    if len(text) > 0:
+        Steganography.encode(original_image, output_path, text)
+        new_chat = ChatMessage(text, True)
 
-    friends[friend_choice].chats.append(new_chat)
+        friends[friend_choice].chats.append(new_chat)
 
-    print colored('Your secret message image is ready!','yellow')
+        print colored('Your secret message image is ready!', 'yellow')
+    else:
+        print colored('Please enter any valid message','red')
+
+
+
 
 
 #This is read_message, which is use to read a secret message which is send by your friends
@@ -132,11 +139,14 @@ def read_message():
     output_path = raw_input('What is the name of the file?')
 
     secret_text = Steganography.decode(output_path)
+
+    #This the case when the reciever in the danger and he/ she send word like SOS and save me
     if secret_text == 'sos' or secret_text == 'save me':
         print 'You are in danger! please terminate the program'
+    elif len(secret_text) <= 0:
+        print 'Sorry we cant print your message, because it is empty'
     else:
         print secret_text
-
 
     new_chat = ChatMessage(secret_text,False)
 
